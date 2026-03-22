@@ -24,9 +24,6 @@ spec:
           kubernetes.io/hostname: asus-4gb
     redis:
       enabled: true
-      master:
-        nodeSelector:
-          kubernetes.io/hostname: asus-4gb
     server:
       nodeSelector:
         kubernetes.io/hostname: acer-8gb
@@ -35,16 +32,16 @@ spec:
           memory: 512Mi
           cpu: 100m
         limits:
-          memory: 1Gi
+          memory: 1.5Gi
     worker:
       nodeSelector:
-        kubernetes.io/hostname: asus-4gb
+        kubernetes.io/hostname: acer-8gb
       resources:
         requests:
-          memory: 256Mi
-          cpu: 50m
-        limits:
           memory: 512Mi
+          cpu: 100m
+        limits:
+          memory: 1Gi
   valuesFrom:
     - kind: Secret
       name: authentik-secret
