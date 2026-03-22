@@ -15,18 +15,21 @@ spec:
         namespace: flux-system
   values:
     authentik:
-      secret_key: "${AUTHENTIK_SECRET_KEY}"
       error_reporting:
         enabled: false
-      postgresql:
-        password: "${AUTHENTIK_POSTGRESQL__PASSWORD}"
     postgresql:
       enabled: true
-      auth:
-        password: "${AUTHENTIK_POSTGRESQL__PASSWORD}"
+      primary:
+        nodeSelector:
+          kubernetes.io/hostname: asus-4gb
     redis:
       enabled: true
+      master:
+        nodeSelector:
+          kubernetes.io/hostname: asus-4gb
     server:
+      nodeSelector:
+        kubernetes.io/hostname: acer-8gb
       resources:
         requests:
           memory: 512Mi
@@ -34,6 +37,8 @@ spec:
         limits:
           memory: 1Gi
     worker:
+      nodeSelector:
+        kubernetes.io/hostname: asus-4gb
       resources:
         requests:
           memory: 256Mi
