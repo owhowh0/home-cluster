@@ -24,6 +24,10 @@ spec:
       kubernetes.io/hostname: acer-8gb
     postgresql:
       enabled: true
+      image:
+        registry: docker.io
+        repository: library/postgres
+        tag: "16"
       auth:
         password: "your-postgres-password"
       primary:
@@ -31,6 +35,10 @@ spec:
           kubernetes.io/hostname: asus-4gb
     redis:
       enabled: true
+      image:
+        registry: docker.io
+        repository: library/redis
+        tag: "7"
       auth:
         password: "your-redis-password"
       master:
