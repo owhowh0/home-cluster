@@ -272,3 +272,13 @@ Final placement:
 - acer-8gb: authentik-server + authentik-worker
 - asus-4gb: authentik-postgresql
 - asus-8gb: free for Home Assistant
+
+### ✅ Phase 13 — CouchDB (Obsidian LiveSync)
+
+Deployed via raw manifests on asus-8gb.
+Running as uid/gid 5984 as required by CouchDB.
+After deploy, run init script:
+```sh
+kubectl exec -n couchdb $(kubectl get pod -n couchdb -o name) -- \
+  sh -c 'curl -s https://raw.githubusercontent.com/vrtmrz/obsidian-livesync/main/utils/couchdb/couchdb-init.sh | hostname=http://localhost:5984 username=admin password=your-password bash'
+```
