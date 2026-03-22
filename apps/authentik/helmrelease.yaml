@@ -8,56 +8,48 @@ spec:
   chart:
     spec:
       chart: authentik
-      version: "2024.x.x"
+      version: "2026.2.x"
       sourceRef:
         kind: HelmRepository
         name: authentik
         namespace: flux-system
   values:
     authentik:
-      secret_key:
-        valueFrom:
-          secretKeyRef:
-            name: authentik-secret
-            key: AUTHENTIK_SECRET_KEY
+      secret_key: "${AUTHENTIK_SECRET_KEY}"
+      error_reporting:
+        enabled: false
       postgresql:
-        password:
-          valueFrom:
-            secretKeyRef:
-              name: authentik-secret
-              key: AUTHENTIK_POSTGRESQL__PASSWORD
-      redis:
-        password:
-          valueFrom:
-            secretKeyRef:
-              name: authentik-secret
-              key: AUTHENTIK_REDIS__PASSWORD
+        password: "${AUTHENTIK_POSTGRESQL__PASSWORD}"
     postgresql:
       enabled: true
       auth:
-        password:
-          valueFrom:
-            secretKeyRef:
-              name: authentik-secret
-              key: AUTHENTIK_POSTGRESQL__PASSWORD
+        password: "${AUTHENTIK_POSTGRESQL__PASSWORD}"
     redis:
       enabled: true
-      auth:
-        password:
-          valueFrom:
-            secretKeyRef:
-              name: authentik-secret
-              key: AUTHENTIK_REDIS__PASSWORD
-    resources:
-      server:
+    server:
+      resources:
         requests:
           memory: 512Mi
           cpu: 100m
         limits:
           memory: 1Gi
-      worker:
+    worker:
+      resources:
         requests:
           memory: 256Mi
           cpu: 50m
         limits:
           memory: 512Mi
+  valuesFrom:
+    - kind: Secret
+      name: authentik-secret
+      valuesKey: AUTHENTIK_SECRET_KEY
+      targetPath: authentik.secret_key
+    - kind: Secret
+      name: authentik-secret
+      valuesKey: AUTHENTIK_POSTGRESQL__PASSWORD
+      targetPath: authentik.postgresql.password
+    - kind: Secret
+      name: authentik-secret
+      valuesKey: AUTHENTIK_POSTGRESQL__PASSWORD
+      targetPath: postgresql.auth.password
