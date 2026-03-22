@@ -61,7 +61,7 @@ spec:
             - name: PAPERLESS_TIME_ZONE
               value: "Europe/Chisinau"
             - name: PAPERLESS_OCR_LANGUAGE
-              value: "ron+eng"
+              value: "eng"
           volumeMounts:
             - mountPath: /usr/src/paperless/data
               name: paperless-data
