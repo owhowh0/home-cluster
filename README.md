@@ -238,3 +238,18 @@ Deployed via Flux + Helm using the official Fossorial chart.
 > ```
 
 Credentials stored encrypted in apps/pangolin/secret.yaml via SOPS+age.
+
+### ✅ Phase 11 — Authentik SSO
+
+Deployed via Flux + Helm using the official Authentik chart v2026.2.x.
+Includes bundled Postgresql and Redis.
+
+Credentials stored encrypted in apps/authentik/secret.yaml via SOPS+age.
+Uses valuesFrom to inject secrets into Helm values.
+
+Access: https://auth.yourdomain.com
+Initial setup: https://auth.yourdomain.com/if/flow/initial-setup/
+
+Resources:
+- requests: 512Mi/100m (server), 256Mi/50m (worker)
+- limits: 1Gi (server), 512Mi (worker)
