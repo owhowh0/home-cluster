@@ -1,0 +1,24 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: newt
+  namespace: newt
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: newt
+      sourceRef:
+        kind: HelmRepository
+        name: fossorial
+        namespace: flux-system
+  values:
+    newtInstances:
+      - name: main
+        enabled: true
+        auth:
+          existingSecretName: newt-cred
+          keys:
+            endpointKey: PANGOLIN_ENDPOINT
+            idKey: NEWT_ID
+            secretKey: NEWT_SECRET
