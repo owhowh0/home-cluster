@@ -22,3 +22,5 @@ spec:
             endpointKey: PANGOLIN_ENDPOINT
             idKey: NEWT_ID
             secretKey: NEWT_SECRET
+    nodeSelector:
+      kubernetes.io/hostname: acer-8gb
