@@ -282,3 +282,16 @@ After deploy, run init script:
 kubectl exec -n couchdb $(kubectl get pod -n couchdb -o name) -- \
   sh -c 'curl -s https://raw.githubusercontent.com/vrtmrz/obsidian-livesync/main/utils/couchdb/couchdb-init.sh | hostname=http://localhost:5984 username=admin password=your-password bash'
 ```
+
+### ✅ Phase 14 — Ente Auth
+
+Deployed museum server + Postgres + MinIO on cluster.
+No SMTP needed — OTP codes appear in museum logs:
+```sh
+kubectl logs -n ente -l app=ente-museum -f | grep -i "otp\|code\|verification"
+```
+
+Gotchas:
+- ENTE_KEY_ENCRYPTION must be base64 encoded 32-byte key: `openssl rand -base64 32`
+- If tables don't exist, restart museum pod to trigger migrations
+- MinIO requires x86-64-v2 CPU — don't schedule on asus-8gb (AMD C-60)
