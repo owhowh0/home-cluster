@@ -16,7 +16,7 @@ spec:
         app: ente-minio
     spec:
       nodeSelector:
-        kubernetes.io/hostname: asus-8gb
+        kubernetes.io/hostname: acer-8gb
       containers:
         - name: minio
           image: minio/minio:latest
