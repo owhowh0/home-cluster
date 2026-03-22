@@ -17,6 +17,10 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/hostname: asus-8gb
+      securityContext:
+        runAsUser: 5984
+        runAsGroup: 5984
+        fsGroup: 5984
       containers:
         - name: couchdb
           image: couchdb:3
@@ -36,6 +40,8 @@ spec:
           volumeMounts:
             - mountPath: /opt/couchdb/data
               name: couchdb-data
+            - mountPath: /opt/couchdb/etc/local.d
+              name: couchdb-etc
           resources:
             requests:
               memory: 128Mi
@@ -46,6 +52,9 @@ spec:
         - name: couchdb-data
           persistentVolumeClaim:
             claimName: couchdb-data
+        - name: couchdb-etc
+          persistentVolumeClaim:
+            claimName: couchdb-etc
 ---
 apiVersion: v1
 kind: Service
