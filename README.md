@@ -217,3 +217,24 @@ doas mount --make-rshared /
 > Longhorn to automatically recover. No manual restarts needed.
 
 Deployed via Flux + Helm with 2 replicas.
+
+### ✅ Phase 10 — Pangolin Newt
+
+Deployed via Flux + Helm using the official Fossorial chart.
+
+> Note: SOPS decryption must be configured on the apps kustomization,
+> not flux-system. Add to clusters/home/apps.yaml:
+> ```yaml
+> decryption:
+>   provider: sops
+>   secretRef:
+>     name: sops-age
+> ```
+
+> Note: if Newt pod starts before secret is decrypted, it will receive
+> the raw ENC[] string. Fix by restarting the deployment:
+> ```sh
+> kubectl rollout restart deployment/newt-newt-main -n newt
+> ```
+
+Credentials stored encrypted in apps/pangolin/secret.yaml via SOPS+age.
