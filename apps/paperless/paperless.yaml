@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: paperless
+  name: paperless-web
   namespace: paperless
 spec:
   replicas: 1
@@ -18,7 +18,7 @@ spec:
       nodeSelector:
         kubernetes.io/hostname: acer-8gb
       containers:
-        - name: paperless
+        - name: paperless-web
           image: ghcr.io/paperless-ngx/paperless-ngx:latest
           ports:
             - containerPort: 8000
@@ -84,7 +84,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: paperless
+  name: paperless-web
   namespace: paperless
 spec:
   selector:
