@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ente-museum
+  namespace: ente
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ente-museum
+  template:
+    metadata:
+      labels:
+        app: ente-museum
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: acer-8gb
+      containers:
+        - name: museum
+          image: ghcr.io/ente-io/server:latest
+          ports:
+            - containerPort: 8080
+            - containerPort: 2112
+          env:
+            - name: ENTE_DB_HOST
+              value: ente-postgres
+            - name: ENTE_DB_PORT
+              value: "5432"
+            - name: ENTE_DB_NAME
+              value: ente
+            - name: ENTE_DB_USER
+              value: ente
+            - name: ENTE_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ente-secret
+                  key: ENTE_DB_PASSWORD
+            - name: ENTE_KEY_ENCRYPTION
+              valueFrom:
+                secretKeyRef:
+                  name: ente-secret
+                  key: ENTE_KEY_ENCRYPTION
+            - name: ENTE_KEY_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: ente-secret
+                  key: ENTE_KEY_HASH
+            - name: ENTE_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ente-secret
+                  key: ENTE_JWT_SECRET
+            - name: ENTE_S3_B2_EU_CEN_ENDPOINT
+              value: "http://ente-minio:9000"
+            - name: ENTE_S3_B2_EU_CEN_REGION
+              value: "us-east-1"
+            - name: ENTE_S3_B2_EU_CEN_BUCKET
+              value: "ente-data"
+            - name: ENTE_S3_B2_EU_CEN_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ente-secret
+                  key: MINIO_ROOT_USER
+            - name: ENTE_S3_B2_EU_CEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ente-secret
+                  key: MINIO_ROOT_PASSWORD
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ente-museum
+  namespace: ente
+spec:
+  selector:
+    app: ente-museum
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+    - name: metrics
+      port: 2112
+      targetPort: 2112

@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ente-postgres
+  namespace: ente
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ente-postgres
+  template:
+    metadata:
+      labels:
+        app: ente-postgres
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: asus-4gb
+      containers:
+        - name: postgres
+          image: postgres:16
+          env:
+            - name: POSTGRES_DB
+              value: ente
+            - name: POSTGRES_USER
+              value: ente
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ente-secret
+                  key: ENTE_DB_PASSWORD
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-data
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 50m
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: ente-postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ente-postgres
+  namespace: ente
+spec:
+  selector:
+    app: ente-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
