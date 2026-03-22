@@ -253,3 +253,22 @@ Initial setup: https://auth.yourdomain.com/if/flow/initial-setup/
 Resources:
 - requests: 512Mi/100m (server), 256Mi/50m (worker)
 - limits: 1Gi (server), 512Mi (worker)
+
+#### Authentik node placement gotchas
+
+- Worker OOMKilled on asus-4gb (4GB RAM not enough)
+- Move both server and worker to acer-8gb
+- Only postgresql goes on asus-4gb
+- When moving postgres to a new node, delete the PVC first or
+  password authentication will fail (old data != new secret)
+- After deleting PVC, force delete all pods before Flux reconciles:
+```sh
+  kubectl delete pods --all -n authentik --force --grace-period=0
+  kubectl delete pvc data-authentik-postgresql-0 -n authentik
+  flux reconcile kustomization apps --with-source
+```
+
+Final placement:
+- acer-8gb: authentik-server + authentik-worker
+- asus-4gb: authentik-postgresql
+- asus-8gb: free for Home Assistant
