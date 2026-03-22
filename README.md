@@ -193,3 +193,27 @@ Deployed via Flux + Helm with 2 replicas (3 is too heavy for this hardware).
 
 - [ ] Xray (ports 80/443, after confirmation)
 - [ ] Proxmox nodes joined as workers
+
+### ✅ Phase 9 — Longhorn storage
+
+Prerequisites on each node:
+```sh
+apk add open-iscsi nfs-utils util-linux
+rc-update add iscsid default
+rc-service iscsid start
+```
+
+> Note: iscsid restart was NOT needed. The only thing required was
+> making the root filesystem a shared mount:
+```sh
+doas mkdir -p /etc/local.d
+printf '#!/bin/sh\nmount --make-rshared /\n' | doas tee /etc/local.d/shared-mount.start
+doas chmod +x /etc/local.d/shared-mount.start
+doas rc-update add local default
+doas mount --make-rshared /
+```
+
+> After running the above on all 3 nodes, wait 1-2 minutes for
+> Longhorn to automatically recover. No manual restarts needed.
+
+Deployed via Flux + Helm with 2 replicas.
