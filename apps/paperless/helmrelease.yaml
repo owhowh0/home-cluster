@@ -33,6 +33,12 @@ spec:
       primary:
         nodeSelector:
           kubernetes.io/hostname: asus-4gb
+        containerSecurityContext:
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+          runAsUser: 0
+        podSecurityContext:
+          enabled: false
     redis:
       enabled: true
       image:
