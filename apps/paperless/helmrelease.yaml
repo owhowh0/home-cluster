@@ -1,0 +1,68 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: paperless
+  namespace: paperless
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: paperless-ngx
+      sourceRef:
+        kind: HelmRepository
+        name: crystalnet
+        namespace: flux-system
+  values:
+    config:
+      paperless_url: "https://paperless.cojusna.top"
+      auth:
+        existing_secret: paperless-secret
+      ocr_languages:
+        - eng
+        - ron
+    nodeSelector:
+      kubernetes.io/hostname: acer-8gb
+    postgresql:
+      enabled: true
+      auth:
+        password: "your-postgres-password"
+      primary:
+        nodeSelector:
+          kubernetes.io/hostname: asus-4gb
+    redis:
+      enabled: true
+      auth:
+        password: "your-redis-password"
+      master:
+        nodeSelector:
+          kubernetes.io/hostname: asus-4gb
+    persistence:
+      data:
+        enabled: true
+        volumeClaimSpec:
+          storageClassName: longhorn
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+      log:
+        enabled: true
+        volumeClaimSpec:
+          storageClassName: longhorn
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+    resources:
+      requests:
+        memory: 512Mi
+        cpu: 100m
+      limits:
+        memory: 1.5Gi
+  valuesFrom:
+    - kind: Secret
+      name: paperless-secret
+      valuesKey: paperless-pass
+      targetPath: config.auth.password
