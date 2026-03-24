@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portainer
+  namespace: portainer
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: portainer
+  template:
+    metadata:
+      labels:
+        app: portainer
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: acer-8gb
+      serviceAccountName: portainer
+      containers:
+        - name: portainer
+          image: portainer/portainer-ce:latest
+          ports:
+            - containerPort: 9000
+            - containerPort: 9443
+          volumeMounts:
+            - mountPath: /data
+              name: portainer-data
+            - mountPath: /var/run/docker.sock
+              name: docker-sock
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 50m
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: portainer-data
+          persistentVolumeClaim:
+            claimName: portainer-data
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
