@@ -15,9 +15,11 @@ spec:
       labels:
         app: your-spotify-mongo
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: pve
       containers:
         - name: mongo
-          image: mongo:6
+          image: mongo:6.0
           ports:
             - containerPort: 27017
           volumeMounts:
