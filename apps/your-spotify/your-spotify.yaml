@@ -64,7 +64,7 @@ spec:
             - name: API_ENDPOINT
               value: http://localhost:8080
             - name: CLIENT_ENDPOINT
-              value: http://localhost:3000
+              value: http://localhost:3001
             - name: MONGO_ENDPOINT
               value: mongodb://mongo:27017/your_spotify
             - name: SPOTIFY_PUBLIC
@@ -123,5 +123,5 @@ spec:
   selector:
     app: your-spotify-web
   ports:
-    - port: 3000
+    - port: 3001
       targetPort: 3000
