@@ -39,7 +39,7 @@ spec:
               name: mongo-data
       containers:
         - name: mongo
-          image: mongo:6
+          image: mongo:4.4
           securityContext:
             runAsUser: 999
             runAsGroup: 999
