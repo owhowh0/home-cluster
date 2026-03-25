@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: your-spotify-mongo
+  namespace: your-spotify
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: longhorn
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: your-spotify-mongo
+  namespace: your-spotify
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: your-spotify-mongo
+  template:
+    metadata:
+      labels:
+        app: your-spotify-mongo
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: asus-4gb
+      containers:
+        - name: mongo
+          image: mongo:6
+          volumeMounts:
+            - mountPath: /data/db
+              name: mongo-data
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 50m
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: mongo-data
+          persistentVolumeClaim:
+            claimName: your-spotify-mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: your-spotify-mongo
+  namespace: your-spotify
+spec:
+  selector:
+    app: your-spotify-mongo
+  ports:
+    - port: 27017
+      targetPort: 27017
