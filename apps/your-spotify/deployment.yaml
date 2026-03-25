@@ -74,7 +74,7 @@ spec:
         app: your-spotify-web
     spec:
       nodeSelector:
-        kubernetes.io/hostname: asus-4gb
+        kubernetes.io/hostname: acer-8gb
       containers:
         - name: web
           image: yooooomi/your_spotify_client:latest
