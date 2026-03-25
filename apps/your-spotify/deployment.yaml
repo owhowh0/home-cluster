@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: your-spotify
+  name: your-spotify-server
   namespace: your-spotify
 spec:
   replicas: 1
@@ -9,30 +9,30 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app: your-spotify
+      app: your-spotify-server
   template:
     metadata:
       labels:
-        app: your-spotify
+        app: your-spotify-server
     spec:
       nodeSelector:
         kubernetes.io/hostname: asus-4gb
       containers:
-        - name: your-spotify
-          image: yooooomi/your_spotify:latest
+        - name: server
+          image: yooooomi/your_spotify_server:latest
           ports:
             - containerPort: 8080
           env:
-            - name: SPOTIFY_PUBLIC
-              value: "https://spotify.cojusna.top"
+            - name: API_ENDPOINT
+              value: "https://spotify-api.cojusna.top"
             - name: CLIENT_ENDPOINT
               value: "https://spotify.cojusna.top"
-            - name: SPOTIFY_CLIENT_ID
+            - name: SPOTIFY_PUBLIC
               valueFrom:
                 secretKeyRef:
                   name: your-spotify-secret
                   key: SPOTIFY_CLIENT_ID
-            - name: SPOTIFY_CLIENT_SECRET
+            - name: SPOTIFY_SECRET
               valueFrom:
                 secretKeyRef:
                   name: your-spotify-secret
@@ -49,11 +49,55 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: your-spotify
+  name: your-spotify-server
   namespace: your-spotify
 spec:
   selector:
-    app: your-spotify
+    app: your-spotify-server
   ports:
     - port: 8080
       targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: your-spotify-web
+  namespace: your-spotify
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: your-spotify-web
+  template:
+    metadata:
+      labels:
+        app: your-spotify-web
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: asus-4gb
+      containers:
+        - name: web
+          image: yooooomi/your_spotify_client:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: API_ENDPOINT
+              value: "https://spotify-api.cojusna.top"
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 50m
+            limits:
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: your-spotify-web
+  namespace: your-spotify
+spec:
+  selector:
+    app: your-spotify-web
+  ports:
+    - port: 3000
+      targetPort: 3000
