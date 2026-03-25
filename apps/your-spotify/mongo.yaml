@@ -30,9 +30,19 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/hostname: asus-4gb
+      initContainers:
+        - name: fix-permissions
+          image: busybox
+          command: ["sh", "-c", "chown -R 999:999 /data/db"]
+          volumeMounts:
+            - mountPath: /data/db
+              name: mongo-data
       containers:
         - name: mongo
           image: mongo:6
+          securityContext:
+            runAsUser: 999
+            runAsGroup: 999
           volumeMounts:
             - mountPath: /data/db
               name: mongo-data
