@@ -295,3 +295,17 @@ Gotchas:
 - ENTE_KEY_ENCRYPTION must be base64 encoded 32-byte key: `openssl rand -base64 32`
 - If tables don't exist, restart museum pod to trigger migrations
 - MinIO requires x86-64-v2 CPU — don't schedule on asus-8gb (AMD C-60)
+
+### ✅ Phase 15 — Your Spotify
+
+Deployed server + web client + MongoDB.
+Two Pangolin resources needed:
+- spotify.cojusna.top → your-spotify-web:3000
+- spotify-api.cojusna.top → your-spotify-server:8080
+
+Gotchas:
+- Image name is yooooomi/your_spotify_server and yooooomi/your_spotify_client
+  not yooooomi/your_spotify
+- MongoDB 5.0+ requires AVX — use mongo:4.4 on Celeron/old CPUs
+- Add redirect URI to Spotify Developer app:
+  https://spotify-api.cojusna.top/oauth/spotify/callback
