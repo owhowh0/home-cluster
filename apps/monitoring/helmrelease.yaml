@@ -1,0 +1,70 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: monitoring
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: "69.x.x"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: flux-system
+  values:
+    grafana:
+      adminUser: admin
+      adminPassword: ""
+      admin:
+        existingSecret: grafana-secret
+        userKey: admin-user
+        passwordKey: admin-password
+      nodeSelector:
+        kubernetes.io/hostname: acer-8gb
+      persistence:
+        enabled: true
+        storageClassName: longhorn
+        size: 5Gi
+      ingress:
+        enabled: false
+      additionalDataSources:
+        - name: Longhorn
+          type: prometheus
+          url: http://longhorn-backend.longhorn-system.svc.cluster.local:9500
+
+    prometheus:
+      prometheusSpec:
+        nodeSelector:
+          kubernetes.io/hostname: acer-8gb
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: longhorn
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 10Gi
+        additionalScrapeConfigs:
+          - job_name: 'vps-node'
+            static_configs:
+              - targets: ['vps-monitoring.home.io:9100']
+          - job_name: 'amneziawg'
+            static_configs:
+              - targets: ['vps-monitoring.home.io:9351']
+
+    alertmanager:
+      alertmanagerSpec:
+        nodeSelector:
+          kubernetes.io/hostname: acer-8gb
+
+    nodeExporter:
+      enabled: true
+
+    kubeStateMetrics:
+      enabled: true
+
+    defaultRules:
+      create: true
