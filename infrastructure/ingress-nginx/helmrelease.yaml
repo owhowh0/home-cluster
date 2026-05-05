@@ -15,8 +15,8 @@ spec:
         namespace: flux-system
   values:
     controller:
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: false
+      dnsPolicy: ClusterFirst
       extraArgs:
         enable-ssl-passthrough: ""
       service:
