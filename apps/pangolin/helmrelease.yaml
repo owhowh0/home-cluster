@@ -22,7 +22,7 @@ spec:
             endpointKey: PANGOLIN_ENDPOINT
             idKey: NEWT_ID
             secretKey: NEWT_SECRET
-    hostNetwork: true
-    dnsPolicy: ClusterFirstWithHostNet
-    nodeSelector:
-      kubernetes.io/hostname: acer-8gb
+        hostNetwork: true
+        dnsPolicy: ClusterFirstWithHostNet
+        nodeSelector:
+          kubernetes.io/hostname: acer-8gb
