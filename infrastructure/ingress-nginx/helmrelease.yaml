@@ -23,6 +23,13 @@ spec:
         type: ClusterIP
       nodeSelector:
         kubernetes.io/hostname: acer-8gb
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+        - key: "node-role.kubernetes.io/master"
+          operator: "Exists"
+          effect: "NoSchedule"
       config:
         use-forwarded-headers: "true"
         # Optional: Add any default whitelists here if desired
