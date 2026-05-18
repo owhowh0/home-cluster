@@ -5,7 +5,8 @@ metadata:
   namespace: newt
 spec:
   selector:
-    app.kubernetes.io/name: newt
+    app.kubernetes.io/instance: newt
+    app.kubernetes.io/component: newt
   ports:
     - name: metrics
       port: 9351
