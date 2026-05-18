@@ -42,6 +42,7 @@ spec:
                 path: /spec/strategy
                 value:
                   type: Recreate
+                  rollingUpdate: null
               - op: add
                 path: /spec/template/spec/hostNetwork
                 value: true
