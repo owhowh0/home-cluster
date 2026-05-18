@@ -49,3 +49,15 @@ spec:
               - op: replace
                 path: /spec/template/spec/dnsPolicy
                 value: ClusterFirstWithHostNet
+              - op: add
+                path: /spec/template/spec/containers/-
+                value:
+                  name: proxy-amneziawg
+                  image: alpine/socat:latest
+                  args: ["TCP-LISTEN:9351,fork,reuseaddr", "TCP:100.96.128.10:9351"]
+              - op: add
+                path: /spec/template/spec/containers/-
+                value:
+                  name: proxy-node-exporter
+                  image: alpine/socat:latest
+                  args: ["TCP-LISTEN:9100,fork,reuseaddr", "TCP:100.96.128.10:9100"]
