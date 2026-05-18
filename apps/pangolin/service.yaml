@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vps-monitoring
+  namespace: newt
+spec:
+  selector:
+    app.kubernetes.io/name: newt
+  ports:
+    - name: metrics
+      port: 9351
+      targetPort: 9351
+      protocol: TCP
+    - name: node-metrics
+      port: 9100
+      targetPort: 9100
+      protocol: TCP

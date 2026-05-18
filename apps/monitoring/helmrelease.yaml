@@ -66,10 +66,10 @@ spec:
         additionalScrapeConfigs:
           - job_name: "vps-node"
             static_configs:
-              - targets: ["vps-monitoring.default.svc.cluster.local:9100"]
+              - targets: ["vps-monitoring.newt.svc.cluster.local:9100"]
           - job_name: "amneziawg"
             static_configs:
-              - targets: ["vps-monitoring.default.svc.cluster.local:9351"]
+              - targets: ["vps-monitoring.newt.svc.cluster.local:9351"]
 
     alertmanager:
       alertmanagerSpec:
