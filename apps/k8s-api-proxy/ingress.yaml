@@ -47,8 +47,51 @@ metadata:
   namespace: default
 subsets:
   - addresses:
-      - ip: 100.96.128.9
+      - ip: 192.168.11.38
     ports:
       - name: https
         port: 6443
         protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vps-monitoring
+  namespace: default
+spec:
+  ports:
+    - name: metrics
+      port: 9351
+      targetPort: 9351
+      protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: vps-monitoring
+  namespace: default
+subsets:
+  - addresses:
+      - ip: 100.96.128.10
+    ports:
+      - name: metrics
+        port: 9351
+        protocol: TCP
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: vps-monitoring-proxy
+  namespace: default
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`vps-monitoring.home.io`)
+      kind: Rule
+      services:
+        - name: vps-monitoring
+          port: 9351
+      middlewares:
+        - name: internal-whitelist
+  tls: {}
