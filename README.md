@@ -179,15 +179,15 @@ Deployed via Flux + Helm with 2 replicas (3 is too heavy for this hardware).
 
 ## 🚧 In progress
 
-- [ ] Pangolin Newt (tunnel client)
+- [x] Pangolin Newt (tunnel client)
 - [ ] Keycloak
 - [ ] Home Assistant
-- [ ] Paperless-ngx
-- [ ] CouchDB (Obsidian LiveSync)
-- [ ] Ente Auth
-- [ ] Your Spotify
-- [ ] Portainer
-- [ ] Prometheus + Grafana
+- [x] Paperless-ngx
+- [x] CouchDB (Obsidian LiveSync)
+- [x] Ente Auth
+- [x] Your Spotify
+- [x] Portainer
+- [x] Prometheus + Grafana
 
 ## Planned
 
@@ -239,39 +239,6 @@ Deployed via Flux + Helm using the official Fossorial chart.
 
 Credentials stored encrypted in apps/pangolin/secret.yaml via SOPS+age.
 
-### ✅ Phase 11 — Authentik SSO
-
-Deployed via Flux + Helm using the official Authentik chart v2026.2.x.
-Includes bundled Postgresql and Redis.
-
-Credentials stored encrypted in apps/authentik/secret.yaml via SOPS+age.
-Uses valuesFrom to inject secrets into Helm values.
-
-Access: https://auth.yourdomain.com
-Initial setup: https://auth.yourdomain.com/if/flow/initial-setup/
-
-Resources:
-- requests: 512Mi/100m (server), 256Mi/50m (worker)
-- limits: 1Gi (server), 512Mi (worker)
-
-#### Authentik node placement gotchas
-
-- Worker OOMKilled on asus-4gb (4GB RAM not enough)
-- Move both server and worker to acer-8gb
-- Only postgresql goes on asus-4gb
-- When moving postgres to a new node, delete the PVC first or
-  password authentication will fail (old data != new secret)
-- After deleting PVC, force delete all pods before Flux reconciles:
-```sh
-  kubectl delete pods --all -n authentik --force --grace-period=0
-  kubectl delete pvc data-authentik-postgresql-0 -n authentik
-  flux reconcile kustomization apps --with-source
-```
-
-Final placement:
-- acer-8gb: authentik-server + authentik-worker
-- asus-4gb: authentik-postgresql
-- asus-8gb: free for Home Assistant
 
 ### ✅ Phase 13 — CouchDB (Obsidian LiveSync)
 
