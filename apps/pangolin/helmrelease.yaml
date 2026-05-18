@@ -38,11 +38,12 @@ spec:
               kind: Deployment
               name: newt-newt-main
             patch: |
+              - op: remove
+                path: /spec/strategy
               - op: add
                 path: /spec/strategy
                 value:
                   type: Recreate
-                  rollingUpdate: null
               - op: add
                 path: /spec/template/spec/hostNetwork
                 value: true
